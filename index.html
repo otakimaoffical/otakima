@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Otakima</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Audio Player Musik Sendiri -->
+  <audio id="bgMusic" loop>
+    <source src="Data/music_web.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="app-container">
+    <!-- Header Global dengan Logo Kustom & Kontrol Ikon -->
+    <div class="header-bar">
+      <div class="logo-area" onclick="goToPage('page-home')" style="cursor: pointer;">
+        <span class="logo-ota">ota</span><span class="logo-kima">kima.</span>
+      </div>
+      <div class="header-controls">
+        <!-- Tombol Ikon Musik -->
+        <button class="icon-btn" id="musicToggleBtn" onclick="toggleMusic()" title="Musik">
+          <svg id="musicIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+        </button>
+        
+        <!-- Tombol Tema dengan Dropdown 3 Pilihan -->
+        <div class="theme-dropdown-wrapper">
+          <button class="icon-btn" onclick="toggleThemeDropdown()" title="Pilih Tema">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>
+          </button>
+          <div id="themeMenu" class="theme-menu">
+            <div onclick="setTheme('light')">Light (Default)</div>
+            <div onclick="setTheme('dark')">Dark Mode</div>
+            <div onclick="setTheme('redblue')">Merah-Biru Soft</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. HOME PAGE -->
+    <div id="page-home" class="page active">
+      <div class="hero-wrapper">
+        <h1 class="main-title">Welcome to Otakima</h1>
+        <p class="subtitle">Latihan cepat, terstruktur, dan efektif.</p>
+        <button class="btn" onclick="goToPage('page-type')">Mulai Latihan</button>
+        <button class="btn btn-secondary" onclick="toggleModal(true)">Tentang Otakima</button>
+      </div>
+    </div>
+
+    <!-- 2. PILIH TIPE -->
+    <div id="page-type" class="page">
+      <button class="back-nav" onclick="goToPage('page-home')">&larr; Kembali</button>
+      <h1>Pilih Tipe Latihan</h1>
+      <p class="subtitle">Tentukan mode tantangan yang kamu inginkan.</p>
+      
+      <div class="menu-card card-mc" onclick="selectType('mc')">
+        <div class="card-icon-placeholder"></div>
+        <div>
+          <h3>Pilihan Ganda</h3>
+          <p>Pilih jawaban yang paling tepat dari pilihan yang tersedia.</p>
+        </div>
+      </div>
+
+      <div class="menu-card card-fill" onclick="selectType('fill')">
+        <div class="card-icon-placeholder"></div>
+        <div>
+          <h3>Isian Singkat</h3>
+          <p>Ketik langsung jawaban yang kosong dengan tepat.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. PILIH LEVEL -->
+    <div id="page-level" class="page">
+      <button class="back-nav" onclick="goToPage('page-type')">&larr; Kembali</button>
+      <h1>Pilih Level Kesulitan</h1>
+      <p class="subtitle">Pilih tingkat sesuai kemampuanmu saat ini.</p>
+      
+      <div class="menu-card card-easy" onclick="startQuiz('easy')">
+        <div class="card-icon-placeholder"></div>
+        <div>
+          <h3>Easy</h3>
+          <p>Soal dasar untuk pemanasan.</p>
+        </div>
+      </div>
+      <div class="menu-card card-medium" onclick="startQuiz('medium')">
+        <div class="card-icon-placeholder"></div>
+        <div>
+          <h3>Medium</h3>
+          <p>Tingkat menengah yang lebih menantang.</p>
+        </div>
+      </div>
+      <div class="menu-card card-hard" onclick="startQuiz('hard')">
+        <div class="card-icon-placeholder"></div>
+        <div>
+          <h3>Hard</h3>
+          <p>Level mahir untuk menguji kemampuan tertinggimu.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. QUIZ SESSION -->
+    <div id="page-quiz" class="page">
+      <div class="quiz-header">
+        <span id="quizProgress">Soal 1 dari 5</span>
+        <span id="quizCategoryLabel">MC - Easy</span>
+      </div>
+      <div class="question-box" id="questionText">Memuat soal...</div>
+      <div id="answerContainer"></div>
+      <button class="btn" id="nextBtn" onclick="nextQuestion()">Lanjut</button>
+    </div>
+
+    <!-- 5. HASIL / SKOR -->
+    <div id="page-result" class="page">
+      <h1>Hasil Latihan</h1>
+      <p class="subtitle">Rincian performa latihan kamu.</p>
+      
+      <div class="score-banner">
+        <p class="score-label">Skor Akhir</p>
+        <h2 id="finalScoreText">0/5</h2>
+        <p id="percentageText" class="percentage-label">0%</p>
+      </div>
+
+      <div class="review-list" id="reviewList"></div>
+
+      <div class="result-btn-group">
+        <button class="btn" onclick="retryQuiz()">Latihan Lagi</button>
+        <button class="btn btn-secondary" onclick="goToPage('page-home')">Keluar Latihan</button>
+      </div>
+    </div>
+
+    <!-- Modal Tentang Otakima -->
+    <div id="aboutModal" class="modal-overlay">
+      <div class="modal-content about-content">
+        <h3>Tentang Otakima</h3>
+        <p class="about-desc">Otakima adalah platform latihan untuk menguji pemahaman pengetahuan. Ini adalah versi awal dari Otakima.</p>
+        
+        <div class="about-section">
+          <strong>Fitur yang Tersedia:</strong>
+          <ul>
+            <li>Latihan soal Bahasa Inggris (Pilihan Ganda & Isian Singkat)</li>
+            <li>3 Level kesulitan (Easy, Medium, Hard) dengan sistem acak soal</li>
+            <li>600+ soal berkualitas</li>
+            <li>Fitur pemutar musik latar pribadi & kustomisasi 3 Tema menarik</li>
+          </ul>
+        </div>
+
+        <div class="about-section">
+          <strong>Fitur yang Akan Datang:</strong>
+          <ul>
+            <li>Soal latihan Matematika</li>
+            <li>Soal latihan Bahasa Indonesia</li>
+            <li>AI asisten yang membantu membedah soal dan memastikan pemahamanmu sampai khatam</li>
+          </ul>
+        </div>
+
+        <p class="about-footer">
+          Tolong berikan penilaianmu ya, agar kami bisa terus mengembangkan platform web ini.<br>
+          Kirimkan ke: <span class="email-highlight">otakima.official@gmail.com</span>
+        </p>
+        <button class="btn" onclick="toggleModal(false)">Tutup</button>
+      </div>
+    </div>
+
+    <!-- Custom Alert / Notifikasi Kustom di Layer Paling Atas -->
+    <div id="customAlert" class="custom-alert-overlay">
+      <div class="custom-alert-box">
+        <h4 id="customAlertTitle">Perhatian</h4>
+        <p id="customAlertMessage">Pesan notifikasi di sini...</p>
+        <button class="btn" onclick="closeCustomAlert()">Oke</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
